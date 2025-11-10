@@ -1,0 +1,30 @@
+# Custom .dockerignore for builds with .env included
+# This allows .env to be copied into the image
+
+**/.circleci
+**/.editorconfig
+**/.dockerignore
+**/.git
+**/.DS_Store
+**/.vscode
+**/node_modules
+
+# Specific patterns to ignore
+data-node
+meili_data*
+librechat*
+Dockerfile*
+docs
+
+# Ignore specific hidden files (but NOT .env)
+.git
+.gitignore
+.github
+.vscode
+.editorconfig
+.prettierrc
+.eslintrc*
+.DS_Store
+
+# Allow .env to be included
+# !.env  (commented - .env will be included by default since we're not excluding all .* files)

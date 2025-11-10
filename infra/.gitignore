@@ -1,0 +1,17 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform.lock.hcl
+
+# Secrets
+.env
+.env.local
+outputs.json
+secrets.json
+
+# Temporary files
+*.tmp
+.DS_Store
