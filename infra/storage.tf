@@ -32,19 +32,19 @@ resource "azurerm_storage_container" "images" {
 }
 
 resource "azurerm_storage_share" "logs" {
-  name                 = "logs"
-  storage_account_name = azurerm_storage_account.main.name
-  quota                = 10
+  name               = "logs"
+  storage_account_id = azurerm_storage_account.main.id
+  quota              = 10
 }
 
 resource "azurerm_storage_share" "meili_data" {
-  name                 = "meili-data"
-  storage_account_name = azurerm_storage_account.main.name
-  quota                = 10
+  name               = "meili-data"
+  storage_account_id = azurerm_storage_account.main.id
+  quota              = 10
 }
 
 resource "azurerm_storage_share" "postgres_data" {
-  name                 = "postgres-data"
-  storage_account_name = azurerm_storage_account.main.name
-  quota                = 10
+  name               = "postgres-data"
+  storage_account_id = azurerm_storage_account.main.id
+  quota              = 10
 }
