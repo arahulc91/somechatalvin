@@ -35,8 +35,18 @@ output "storage_account_key" {
   sensitive   = true
 }
 
-output "container_registry_login_server" {
+output "acr_name" {
+  description = "Container registry name"
+  value       = azurerm_container_registry.main.name
+}
+
+output "acr_login_server" {
   description = "Container registry login server"
+  value       = azurerm_container_registry.main.login_server
+}
+
+output "container_registry_login_server" {
+  description = "Container registry login server (deprecated, use acr_login_server)"
   value       = azurerm_container_registry.main.login_server
 }
 

@@ -20,16 +20,6 @@ resource "random_password" "jwt_refresh_secret" {
   special = true
 }
 
-resource "random_password" "creds_key" {
-  length  = 64
-  special = false
-}
-
-resource "random_password" "creds_iv" {
-  length  = 32
-  special = false
-}
-
 resource "random_password" "meili_master_key" {
   length  = 32
   special = false

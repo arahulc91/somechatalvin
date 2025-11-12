@@ -6,7 +6,7 @@ resource "azurerm_log_analytics_workspace" "main" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   sku                 = "PerGB2018"
-  retention_in_days   = 30
+  retention_in_days   = 7
   tags                = local.common_tags
 }
 
@@ -166,7 +166,7 @@ resource "azurerm_container_app" "rag_api" {
     }
 
     min_replicas = 1
-    max_replicas = 2
+    max_replicas = 1
   }
 
   secret {
@@ -221,7 +221,7 @@ resource "azurerm_container_app" "librechat" {
     }
 
     min_replicas = 1
-    max_replicas = 3
+    max_replicas = 1
   }
 
   secret {

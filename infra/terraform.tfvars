@@ -8,7 +8,7 @@ resource_group_name = "rg-librechat"
 location = "eastus"
 
 # Environment (dev, staging, prod)
-environment = "prod"
+environment = "dev"
 
 # Project name (used for resource naming)
 project_name = "librechat"
@@ -30,5 +30,5 @@ image_tag = "latest"
 tags = {
   Project     = "LibreChat"
   ManagedBy   = "Terraform"
-  Environment = "Production"
+  Environment = "Development"
 }
