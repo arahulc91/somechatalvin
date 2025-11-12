@@ -9,7 +9,6 @@ NC='\033[0m'
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 IMAGE_TAG="${IMAGE_TAG:-latest}"
-ACR_LOGIN_SERVER="test"
 
 echo -e "${GREEN}╔══════════════════════════════════════════╗${NC}"
 echo -e "${GREEN}║  LibreChat Build & Push to ACR          ║${NC}"
@@ -22,43 +21,43 @@ if [ ! -f "$PROJECT_ROOT/.env" ]; then
     exit 1
 fi
 
-# # Check if terraform outputs exist
-# if [ ! -d "$SCRIPT_DIR/.terraform" ]; then
-#     echo -e "${RED}ERROR: Terraform not initialized. Run 'terraform init' first.${NC}"
-#     exit 1
-# fi
+# Check if terraform outputs exist
+if [ ! -d "$SCRIPT_DIR/.terraform" ]; then
+    echo -e "${RED}ERROR: Terraform not initialized. Run 'terraform init' first.${NC}"
+    exit 1
+fi
 
-# # Get ACR details from Terraform
-# echo -e "${YELLOW}→ Getting ACR credentials...${NC}"
-# cd "$SCRIPT_DIR"
+# Get ACR details from Terraform
+echo -e "${YELLOW}→ Getting ACR credentials...${NC}"
+cd "$SCRIPT_DIR"
 
-# ACR_LOGIN_SERVER=$(terraform output -raw container_registry_login_server 2>/dev/null)
-# ACR_USERNAME=$(terraform output -raw container_registry_admin_username 2>/dev/null)
-# ACR_PASSWORD=$(terraform output -raw container_registry_admin_password 2>/dev/null)
+ACR_LOGIN_SERVER=$(terraform output -raw container_registry_login_server 2>/dev/null)
+ACR_USERNAME=$(terraform output -raw container_registry_admin_username 2>/dev/null)
+ACR_PASSWORD=$(terraform output -raw container_registry_admin_password 2>/dev/null)
 
-# if [ -z "$ACR_LOGIN_SERVER" ]; then
-#     echo -e "${RED}ERROR: Could not get ACR details. Run 'terraform apply' first.${NC}"
-#     exit 1
-# fi
+if [ -z "$ACR_LOGIN_SERVER" ]; then
+    echo -e "${RED}ERROR: Could not get ACR details. Run 'terraform apply' first.${NC}"
+    exit 1
+fi
 
-# echo -e "${GREEN}✓ ACR: $ACR_LOGIN_SERVER${NC}"
+echo -e "${GREEN}✓ ACR: $ACR_LOGIN_SERVER${NC}"
 
 # Setup custom build files
 cp "$SCRIPT_DIR/.dockerignore.custom" "$PROJECT_ROOT/.dockerignore.tmp"
 cp "$SCRIPT_DIR/Dockerfile.custom" "$PROJECT_ROOT/Dockerfile.tmp"
 
-# # Login to ACR
-# echo ""
-# echo -e "${YELLOW}→ Logging in to ACR...${NC}"
-# echo "$ACR_PASSWORD" | docker login "$ACR_LOGIN_SERVER" -u "$ACR_USERNAME" --password-stdin
+# Login to ACR
+echo ""
+echo -e "${YELLOW}→ Logging in to ACR...${NC}"
+echo "$ACR_PASSWORD" | docker login "$ACR_LOGIN_SERVER" -u "$ACR_USERNAME" --password-stdin
 
-# if [ $? -ne 0 ]; then
-#     rm -f "$PROJECT_ROOT/.dockerignore.tmp" "$PROJECT_ROOT/Dockerfile.tmp"
-#     echo -e "${RED}ERROR: Failed to login to ACR${NC}"
-#     exit 1
-# fi
+if [ $? -ne 0 ]; then
+    rm -f "$PROJECT_ROOT/.dockerignore.tmp" "$PROJECT_ROOT/Dockerfile.tmp"
+    echo -e "${RED}ERROR: Failed to login to ACR${NC}"
+    exit 1
+fi
 
-# echo -e "${GREEN}✓ Logged in${NC}"
+echo -e "${GREEN}✓ Logged in${NC}"
 
 # Build the image
 echo ""
@@ -81,20 +80,20 @@ fi
 
 echo -e "${GREEN}✓ Build complete${NC}"
 
-# # Push the image
-# echo ""
-# echo -e "${YELLOW}→ Pushing to ACR...${NC}"
-# docker push "$ACR_LOGIN_SERVER/librechat:$IMAGE_TAG"
+# Push the image
+echo ""
+echo -e "${YELLOW}→ Pushing to ACR...${NC}"
+docker push "$ACR_LOGIN_SERVER/librechat:$IMAGE_TAG"
 
-# if git rev-parse --short HEAD >/dev/null 2>&1; then
-#     COMMIT_HASH=$(git rev-parse --short HEAD)
-#     docker push "$ACR_LOGIN_SERVER/librechat:$COMMIT_HASH"
-# fi
+if git rev-parse --short HEAD >/dev/null 2>&1; then
+    COMMIT_HASH=$(git rev-parse --short HEAD)
+    docker push "$ACR_LOGIN_SERVER/librechat:$COMMIT_HASH"
+fi
 
-# if [ $? -ne 0 ]; then
-#     echo -e "${RED}ERROR: Push failed${NC}"
-#     exit 1
-# fi
+if [ $? -ne 0 ]; then
+    echo -e "${RED}ERROR: Push failed${NC}"
+    exit 1
+fi
 
 echo ""
 echo -e "${GREEN}╔══════════════════════════════════════════╗${NC}"
